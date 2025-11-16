@@ -107,7 +107,6 @@ export default class extends Component<Props> {
   }
 
   installed() {
-    console.log('Component installed with props:', this.props)
 
     // Kiểm tra OAuth callback khi popup load trang này
     this.checkOAuthResult()
@@ -244,8 +243,7 @@ export default class extends Component<Props> {
     const callbackUrl = `${window.location.origin}/oauth-callback.html`
     const oauthUrl = `https://zalo-sandbox.vbot.vn/oa/connect?p_code=${this.state.projectCode}&callback_uri=${encodeURIComponent(callbackUrl)}`
 
-    console.log('Opening OAuth popup with URL:', oauthUrl)
-    console.log('Callback URL:', callbackUrl)
+
 
     const popup = window.open(
       oauthUrl,
@@ -344,7 +342,7 @@ export default class extends Component<Props> {
     const currentLocale = this.props.locale || 'vi'
 
     return (
-      <div class='flex flex-col gap-4 overflow-hidden h-full bg-vb-bg '>
+      <div class='flex flex-col gap-4 overflow-hidden h-full bg-vb-bg'>
 
         {oauthStatus === 'error' && (
           <div class='bg-red-50 border-b border-red-200 p-3'>
@@ -373,7 +371,7 @@ export default class extends Component<Props> {
 
           {hasItems && (
             <div class='flex flex-col'>
-              <div class='h-[280px] overflow-y-auto'>
+              <div class='h-[275px] overflow-y-auto'>
                 <div class='grid grid-cols-2 gap-4'>
                   {items.map((item, index) => (
                     <div class='flex items-center gap-2 p-2 border rounded-lg'>
@@ -419,7 +417,7 @@ export default class extends Component<Props> {
           {isEmpty && (
             <div class='text-center py-8'>
               <div class='my-5'>
-                <vb-empty></vb-empty>
+                <vb-empty locale={currentLocale}></vb-empty>
               </div>
               <vb-button
                 locale={currentLocale}
