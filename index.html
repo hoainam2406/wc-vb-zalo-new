@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/omi.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OMI Elements</title>
+    <link rel="stylesheet" href="./src/scss/tailwind.scss" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="theme-color" content="#f8fafc" />
+    <style>
+      button,
+      input,
+      select,
+      textarea {
+        font-family: var(--app-font) !important;
+      }
+
+      body {
+        font-family:
+          Be Vietnam Pro,
+          ui-sans-serif,
+          -apple-system,
+          system-ui,
+          Segoe UI,
+          Helvetica,
+          Apple Color Emoji,
+          Arial,
+          sans-serif,
+          Segoe UI Emoji,
+          Segoe UI Symbol;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        margin: 1rem;
+      }
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const toggleButton = document.getElementById('theme-toggle-btn')
+        let currentHostTheme = 'normal'
+
+        toggleButton.addEventListener('click', () => {
+          // Chuyển đổi theme
+          currentHostTheme = currentHostTheme === 'normal' ? 'dark' : 'normal'
+
+          // 1. Tạo một Custom Event với tên 'theme-change'
+          // Dữ liệu mới (dark/light) được đính kèm trong 'detail'
+          const themeChangeEvent = new CustomEvent('theme-change', {
+            detail: { theme: currentHostTheme },
+          })
+
+          // 2. Phát sự kiện này ra đối tượng window
+          window.dispatchEvent(themeChangeEvent)
+          // toogleDark();
+          console.log(`Ứng dụng chủ đã PHÁT sự kiện đổi theme thành: ${currentHostTheme}`)
+        })
+
+        const myApp = document.querySelector('vb-wc-history-call-voice-to-text-v2')
+        const countDisplay = document.getElementById('countDisplay')
+        const hostCountBtn = document.getElementById('hostCountBtn')
+
+        if (myApp && countDisplay && hostCountBtn) {
+          // Lắng nghe sự kiện count-event để cập nhật hiển thị
+          myApp.addEventListener('count-event', (e) => {
+            countDisplay.textContent = 'Count value: ' + e.detail.message
+          })
+
+          // Khi bấm nút ngoài host thì gọi phương thức countUp trong vb-wc-history-call-voice-to-text-v2
+          hostCountBtn.addEventListener('click', () => {
+            myApp.countUp()
+          })
+        }
+
+        try {
+          if (
+            localStorage.theme === 'dark' ||
+            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          ) {
+            walkDOMAndToggleDark(document.body, false)
+            document.documentElement.classList.add('dark')
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0B1120')
+          } else {
+            walkDOMAndToggleDark(document.body, true)
+            document.documentElement.classList.remove('dark')
+          }
+        } catch (_) {}
+      })
+
+      function toggleNodeDark(node, isDark) {
+        if (node instanceof HTMLElement && node.tagName.toLowerCase().indexOf('-') !== -1) {
+          if (isDark) {
+            node.classList.remove('dark')
+          } else {
+            node.classList.add('dark')
+          }
+        }
+      }
+
+      function walkDOMAndToggleDark(rootNode, isDark) {
+        if (isDark) {
+          document.documentElement.classList.remove('dark')
+        } else {
+          document.documentElement.classList.add('dark')
+        }
+        const treeWalker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT, null, false)
+
+        while (treeWalker.nextNode()) {
+          const node = treeWalker.currentNode
+          toggleNodeDark(node, isDark)
+
+          // Check if the node has a shadow root
+          if (node.shadowRoot) {
+            walkDOMAndToggleDark(node.shadowRoot, isDark)
+          }
+
+          // Check if the node has assigned nodes (for slots)
+          if (node.assignedNodes) {
+            node.assignedNodes().forEach((assignedNode) => {
+              if (assignedNode.nodeType === Node.ELEMENT_NODE) {
+                walkDOMAndToggleDark(assignedNode, isDark)
+              }
+            })
+          }
+        }
+      }
+
+      function toogleDark() {
+        console.log('toggle dark mode host')
+        if (document.documentElement.classList.contains('dark')) {
+          localStorage.theme = 'light'
+          walkDOMAndToggleDark(document.body, true)
+          document.documentElement.classList.remove('dark')
+        } else {
+          localStorage.theme = 'dark'
+          walkDOMAndToggleDark(document.body, false)
+          document.documentElement.classList.add('dark')
+        }
+      }
+
+      function refreshDark() {
+        if (document.documentElement.classList.contains('dark')) {
+          walkDOMAndToggleDark(document.body, false)
+        } else {
+          walkDOMAndToggleDark(document.body, true)
+        }
+      }
+
+      window.addEventListener('load', function () {
+        refreshDark()
+      })
+    </script>
+  </head>
+
+  <body>
+    <h1>Trang web host</h1>
+    <button id="theme-toggle-btn">Chuyển Theme</button>
+    <button id="hostCountBtn">+ 1 Ở bên ngoài host</button>
+    <p id="countDisplay">Count value will appear here</p>
+    <div style="height: 600px; padding: 12px 12px 12px 12px">
+      <vb-wc-history-call-voice-to-text-v2
+        theme="normal"
+        trans-id="03652967701758799855045"
+        customer-name="Khách hàng"
+        agent-name="Tổng đài"
+        api-base-url="https://api-sandbox-h01.vbot.vn/v1.0"
+        access-token="ChPJeHm1VcTTllNIl89lr9m3LkuLJt4I3BW2B8W6oQ-A6S5hSvnQnicQBsJIFdvDTazqybixIhnYrdFUrg63LT3pT_GNao15LSLgW3pddde4cw_bYq871xb2AsouT-TCcEwOfj3kjBHoHe_PB_GCUaEezDDn2fHEaSy9zqLnPoaK2js1474_EBkF7okGAW-GQc500IsjJgTu2k8Bi34eA2sVYyvWjZTV7C_jvCLw_-3st9xejo6ZLe-bmJ-rk2VJ9j6Z7IaZ14NY8SlMz-qQv_e78PEhE8DbqD1xCbPS63ccsPJ2QSpqC_CkexCjS_ITMfFbt-siNpmdlZveVNiAfUG2oys4xO9muCLl81nFK8IPYsrKKDTvZTHe7p04PyMwpkYOiC3w-eizIWJ27oyXTOK3G_EEMCC91gfH3h4oXKOnl8bQWe7acUxOjysx9KSoc7SnzFA6g_4izu_6w9V4H5-bC5-0XsuaHzWpBF0lcW-2aR5jT4tgb1IFfc3j9XCEy0KGhNLCHkUfx71HVZdXzg
+      "
+        token-type="Bearer"
+        project-code="PR202407090911325764" 
+        uid="67f991b5dafc46789c6b0d19157ab13a"
+      ></vb-wc-history-call-voice-to-text-v2>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
