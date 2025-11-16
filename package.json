@@ -1,7 +1,7 @@
 {
-  "name": "vb-wc-history-call-voice-to-text-v2",
+  "name": "vb-wc-zalo",
   "private": true,
-  "version": "0.0.7",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "start": "vite",
