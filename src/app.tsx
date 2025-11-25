@@ -239,7 +239,7 @@ export default class extends Component<Props> {
     }
   }
 
-  private handleAddZaloOAPopup = () => {
+  handleAddZaloOAPopup = () => {
     const callbackUrl = `${window.location.origin}/oauth-callback.html`
     const oauthUrl = `https://zalo-sandbox.vbot.vn/oa/connect?p_code=${this.state.projectCode}&callback_uri=${encodeURIComponent(callbackUrl)}`
 
@@ -403,14 +403,14 @@ export default class extends Component<Props> {
                   ))}
                 </div>
               </div>
-              <div class='pt-4 flex justify-end'>
+              {/* <div class='pt-4 flex justify-end'>
                 <vb-button
                   locale={currentLocale}
                   title={this.t.addOALink}
                   isProcessing={isProcessing}
                   onButton-click={this.handleAddZaloOAPopup}
                 />
-              </div>
+              </div> */}
             </div>
           )}
 
@@ -419,12 +419,12 @@ export default class extends Component<Props> {
               <div class='my-5'>
                 <vb-empty locale={currentLocale}></vb-empty>
               </div>
-              <vb-button
+              {/* <vb-button
                 locale={currentLocale}
                 title={this.t.addOALink}
                 isProcessing={isProcessing}
                 onButton-click={this.handleAddZaloOAPopup}
-              />
+              /> */}
             </div>
           )}
 
